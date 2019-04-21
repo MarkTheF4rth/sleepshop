@@ -17,10 +17,6 @@ public class Manager implements Runnable {
 		t.start();
 	}
 
-	public synchronized void wakeManager() {
-		notifyAll();
-	}
-
 	public synchronized void runLoop() {
 		try {
 			if (c.isHoliday()) {
@@ -36,11 +32,11 @@ public class Manager implements Runnable {
 					s.setTooLoud(false);
 				}
 				Thread.sleep(1000);
-			} else {
-				wait();
 			}
+
 		} catch (InterruptedException e) {
 		}
+		s.wait(this);
 
 	}
 

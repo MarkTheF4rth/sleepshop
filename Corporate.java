@@ -5,11 +5,7 @@ import java.util.*;
 public class Corporate {
 	private static Corporate instance;
 	
-	private Paycheque pay1;
-	private Paycheque pay2;
-	private Paycheque pay3;
-	private Paycheque pay4;
-	
+	private List<Paycheque> paycheques;
 	private List<Paycheque> availcheques;
 	
 	private boolean holiday;
@@ -23,31 +19,33 @@ public class Corporate {
 	public Corporate() {
 		holiday = false;
 		availcheques = new LinkedList<Paycheque>();
-		pay1 = new Paycheque(1);
-		pay2 = new Paycheque(2);
-		pay3 = new Paycheque(3);
-		pay4 = new Paycheque(4);
+		paycheques = new LinkedList<Paycheque>();
+		for (int i = 0 ; i <= 10 ; i++) {
+			paycheques.add(new Paycheque(i));
+		}
 	}
 	
-	public int addCheque(Paycheque pc) {
+	public synchronized void addCheque(Paycheque pc) {
 		System.out.println("adding cheque"+pc.getIndex());
 		availcheques.add(pc);
-		return availcheques.size();
+		try {
+			wait();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
-	public void cashCheques() {
+	public synchronized void cashCheques() {
 		availcheques = new LinkedList<Paycheque>();
-		pay1.wakeCheque();
-		pay2.wakeCheque();
-		pay3.wakeCheque();
-		pay4.wakeCheque();
+		notifyAll();
 	}
 	
 	public void run() {
-		pay1.startInstance();
-		pay2.startInstance();
-		pay3.startInstance();
-		pay4.startInstance();
+		for (Paycheque p : paycheques) {
+			p.startInstance();
+		}
+
 	}
 
 	public boolean isHoliday() {

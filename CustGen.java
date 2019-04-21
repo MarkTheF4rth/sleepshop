@@ -3,11 +3,9 @@ package main;
 public class CustGen implements Runnable {
 	private Shop s;
 	private Thread t;
-	private Manager manager;
 	
 	public CustGen() {
 		t = new Thread(this, "custGen");
-		this.manager = Manager.getInstance();
 		t.start();
 	}
 
@@ -19,7 +17,7 @@ public class CustGen implements Runnable {
 				Thread.sleep((long) ((Math.random())*3000));
 				if (s.generateCustomer() == 3) {
 					s.setTooLoud(true);
-					manager.wakeManager();
+					s.wake();
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();

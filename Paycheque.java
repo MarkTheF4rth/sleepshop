@@ -16,22 +16,17 @@ public class Paycheque implements Runnable {
 		t.start();
 	}
 
-	public synchronized void wakeCheque() {
-		notifyAll();
-		System.out.println("waking" + index);
-	}
-
 	public synchronized void runLoop() {
 		try {
 			Thread.sleep((long) (Math.random() * 10000));
-			System.out.println("sleeping" + index);
-			if (c.addCheque(this) == 4) {
-				c.setHoliday(true);
-			}
-			wait();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		System.out.println("sleeping" + index);
+		if (c.getPayCheques().size() == 10) {
+			c.setHoliday(true);
+		}
+		c.addCheque(this);
 
 	}
 
